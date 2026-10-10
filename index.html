@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f7f3" />
+    <meta name="description" content="A calm, local-first dashboard for keeping student tasks on track." />
+    <title>Smart Campus | Student Task Manager</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="#overview" aria-label="Smart Campus home">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <span class="brand-name">smart<span>campus</span></span>
+        </a>
+
+        <div class="sidebar-label">WORKSPACE</div>
+        <nav class="primary-nav" aria-label="Workspace">
+          <button class="nav-link is-active" type="button" data-view="overview" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">▦</span> Overview
+          </button>
+          <button class="nav-link" type="button" data-view="all">
+            <span class="nav-icon" aria-hidden="true">☷</span> All tasks
+            <span class="nav-count" id="nav-task-count">0</span>
+          </button>
+          <button class="nav-link" type="button" data-view="today">
+            <span class="nav-icon" aria-hidden="true">◷</span> Due today
+          </button>
+          <button class="nav-link" type="button" data-view="completed">
+            <span class="nav-icon" aria-hidden="true">✓</span> Completed
+          </button>
+        </nav>
+
+        <div class="sidebar-note">
+          <span class="note-spark" aria-hidden="true">✳</span>
+          <p>Small steps add up.<br /><strong>You’ve got this.</strong></p>
+        </div>
+
+        <div class="sidebar-bottom">
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+            <span class="theme-icon" aria-hidden="true">◐</span>
+            <span>Dark appearance</span>
+            <span class="toggle-track" aria-hidden="true"><span></span></span>
+          </button>
+          <div class="profile-row">
+            <span class="avatar" aria-hidden="true">SC</span>
+            <span class="profile-copy"><strong>Student</strong><small>My workspace</small></span>
+            <span class="profile-more" aria-hidden="true">···</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content" id="overview">
+        <header class="topbar">
+          <div class="breadcrumb"><span>Workspace</span><span aria-hidden="true">/</span><strong>Overview</strong></div>
+          <div class="topbar-actions">
+            <span class="today-date" id="topbar-date"></span>
+            <button class="mobile-theme-toggle" id="mobile-theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Toggle appearance"><span aria-hidden="true">◐</span></button>
+            <span class="topbar-avatar" aria-label="Student profile">S</span>
+          </div>
+        </header>
+
+        <section class="welcome-section" aria-labelledby="welcome-title">
+          <div>
+            <p class="eyebrow" id="welcome-date">YOUR CAMPUS, IN CONTROL</p>
+            <h1 id="welcome-title">Make room for <em>what matters.</em></h1>
+            <p class="welcome-copy">A little clarity goes a long way. Here’s your day at a glance.</p>
+          </div>
+          <button class="button button-primary add-task-trigger" type="button" data-open-task-form>
+            <span aria-hidden="true">＋</span> Add a task
+          </button>
+        </section>
+
+        <section class="stats-grid" aria-label="Task summary">
+          <article class="stat-card stat-card-main">
+            <div class="stat-top"><span>In progress</span><span class="stat-icon icon-green" aria-hidden="true">↗</span></div>
+            <strong class="stat-value" id="stat-open">0</strong>
+            <span class="stat-caption" id="stat-open-caption">tasks to keep moving</span>
+            <div class="mini-progress" aria-hidden="true"><span id="progress-fill"></span></div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Due today</span><span class="stat-icon icon-coral" aria-hidden="true">◷</span></div>
+            <strong class="stat-value" id="stat-today">0</strong>
+            <span class="stat-caption">on your plate today</span>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Completed</span><span class="stat-icon icon-blue" aria-hidden="true">✓</span></div>
+            <strong class="stat-value" id="stat-completed">0</strong>
+            <span class="stat-caption">tasks checked off</span>
+          </article>
+        </section>
+
+        <section class="task-section" aria-labelledby="tasks-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">YOUR STUDY PLAN</p>
+              <h2 id="tasks-heading">My tasks <span class="heading-count" id="visible-task-count">0</span></h2>
+            </div>
+            <button class="button button-quiet add-task-secondary" type="button" data-open-task-form><span aria-hidden="true">＋</span> New task</button>
+          </div>
+
+          <div class="task-toolbar">
+            <label class="search-box">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <span class="visually-hidden">Search tasks</span>
+              <input id="task-search" type="search" placeholder="Search tasks..." autocomplete="off" />
+              <kbd>/</kbd>
+            </label>
+            <label class="filter-control">
+              <span class="visually-hidden">Filter tasks</span>
+              <select id="task-filter">
+                <option value="all">All tasks</option>
+                <option value="active">In progress</option>
+                <option value="completed">Completed</option>
+                <option value="today">Due today</option>
+                <option value="upcoming">Upcoming</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="task-list" id="task-list" aria-live="polite" aria-busy="false"></div>
+          <div class="empty-state" id="empty-state" hidden>
+            <span class="empty-illustration" aria-hidden="true">✳</span>
+            <h3 id="empty-title">A fresh start.</h3>
+            <p id="empty-copy">Add your first task and make today count.</p>
+            <button class="button button-primary" type="button" data-open-task-form><span aria-hidden="true">＋</span> Add your first task</button>
+          </div>
+        </section>
+
+        <footer class="page-footer"><span>Made for the things you’re learning.</span><span>Smart Campus <span aria-hidden="true">·</span> <span id="footer-year"></span></span></footer>
+      </main>
+    </div>
+
+    <dialog class="task-dialog" id="task-dialog" aria-labelledby="dialog-title">
+      <form id="task-form" class="task-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">MAKE A PLAN</p><h2 id="dialog-title">Add a task</h2></div>
+          <button class="icon-button" type="button" id="close-dialog" aria-label="Close form">×</button>
+        </div>
+        <label class="field-label" for="task-title">Task name <span aria-hidden="true">*</span></label>
+        <input class="text-input" id="task-title" name="title" type="text" maxlength="100" placeholder="e.g. Read chapter 4" required />
+        <p class="field-error" id="title-error" aria-live="polite"></p>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label" for="task-priority">Priority</label>
+            <select class="text-input" id="task-priority" name="priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="field-label" for="task-due-date">Due date</label>
+            <input class="text-input" id="task-due-date" name="dueDate" type="date" />
+          </div>
+        </div>
+        <label class="field-label" for="task-course">Course <span class="optional-label">Optional</span></label>
+        <input class="text-input" id="task-course" name="course" type="text" maxlength="40" placeholder="e.g. Biology 101" />
+        <div class="dialog-actions">
+          <button class="button button-quiet" type="button" id="cancel-dialog">Cancel</button>
+          <button class="button button-primary" type="submit">Save task <span aria-hidden="true">→</span></button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>
